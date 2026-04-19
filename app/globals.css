@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --dh-black: #0A0A0A;
+  --dh-surface: #141414;
+  --dh-surface-2: #1c1c1c;
+  --dh-orange: #F97316;
+  --dh-orange-dark: #EA580C;
+  --dh-muted: #a3a3a3;
+}
+
+html, body {
+  background: var(--dh-black);
+  color: #fff;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  overscroll-behavior-y: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.font-display {
+  font-family: var(--font-bricolage), system-ui, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Hide scrollbars (horizontal cat tabs) */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Shimmer for checkout CTA */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.btn-shimmer {
+  background: linear-gradient(90deg, #F97316 0%, #FB923C 25%, #F97316 50%, #FB923C 75%, #F97316 100%);
+  background-size: 200% 100%;
+}
+.btn-shimmer:hover {
+  animation: shimmer 2s linear infinite;
+}
+
+/* Sold out overlay */
+.sold-out-overlay {
+  backdrop-filter: grayscale(1) brightness(0.5);
+}
+
+/* RTL flips */
+html[dir='rtl'] .no-flip { direction: ltr; }
+
+/* PWA safe areas */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+  .safe-top { padding-top: env(safe-area-inset-top); }
+}
+
+/* Global smooth */
+* { -webkit-font-smoothing: antialiased; }
+
+/* Inputs look */
+input, textarea, select {
+  background: var(--dh-surface);
+  color: #fff;
+}
+input::placeholder, textarea::placeholder { color: #737373; }
+
+/* Radio custom */
+.dh-radio {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #404040;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.dh-radio:checked { border-color: var(--dh-orange); }
+.dh-radio:checked::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: var(--dh-orange);
+  border-radius: 999px;
+}
