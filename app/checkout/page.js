@@ -5,8 +5,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, User, Phone, MapPin, Check, Loader2 } from 'lucide-react';
-import { PhoneInput } from 'react-international-phone';
-import 'react-international-phone/style.css';
+import { CountryCodeInput } from '@/components/PhoneInput/CountryCodeInput';
+import { PhoneNumberInput } from '@/components/PhoneInput/PhoneNumberInput';
+import { countryList } from '@/lib/countryList';
 import Header from '@/components/Header';
 import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
@@ -19,7 +20,8 @@ function CheckoutPage() {
   const { items, subtotal, clear, mounted } = useCart();
 
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('+961');
   const [address, setAddress] = useState('');
   const [promo, setPromo] = useState(null);
   const [whatsappTemplate, setWhatsappTemplate] = useState('');
@@ -69,6 +71,8 @@ function CheckoutPage() {
     }
   }, [mounted, items.length, submitting, router]);
 
+  const combinedPhone = `${countryCode} ${phoneNumber}`.trim();
+
   const buildWhatsAppMessage = (orderNo) => {
     const lines = items.map(it => {
       const nm = it.name_en;
@@ -84,7 +88,7 @@ function CheckoutPage() {
       msg = msg.split('{{items}}').join(lines);
       msg = msg.split('{{total}}').join(total.toFixed(2));
       msg = msg.split('{{name}}').join(name);
-      msg = msg.split('{{phone}}').join(phone);
+      msg = msg.split('{{phone}}').join(combinedPhone);
       msg = msg.split('{{address}}').join(address);
       return msg;
     }
@@ -94,7 +98,7 @@ function CheckoutPage() {
       `🕢 Order #${orderNo}`,
       ``,
       `👤 *Name:* ${name}`,
-      `📞 *Phone:* ${phone}`,
+      `📞 *Phone:* ${combinedPhone}`,
       `📍 *Address:* ${address}`,
       `---`,
       lines,
@@ -108,7 +112,7 @@ function CheckoutPage() {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !phone.trim() || !address.trim()) return;
+    if (!name.trim() || !phoneNumber.trim() || !address.trim()) return;
     if (!isOpen) {
       alert(lang === 'ar' ? 'المطعم مغلق حالياً، لا يمكن استقبال طلبات.' : 'The restaurant is currently closed. We cannot take orders.');
       return;
@@ -117,7 +121,7 @@ function CheckoutPage() {
 
     const orderPayload = {
       customer_name: name.trim(),
-      phone: phone.trim(),
+      phone: combinedPhone,
       address: address.trim(),
       items: items.map(it => ({
         id: it.id,
@@ -152,7 +156,7 @@ function CheckoutPage() {
     const confirmation = {
       orderId: orderId || `local-${orderNo}`,
       orderNo,
-      name, phone, address,
+      name, phone: combinedPhone, address,
       items: orderPayload.items,
       promo: promo?.code || null,
       discount,
@@ -180,6 +184,9 @@ function CheckoutPage() {
     router.push('/confirmation');
   };
 
+  const activeCountry = countryList.find(c => c.code === countryCode);
+  const activeMask = activeCountry?.mask || '______________';
+
   return (
     <div className="min-h-screen pb-36">
       <Header showCart={false} isOpen={isOpen} schedule={schedule} />
@@ -197,17 +204,24 @@ function CheckoutPage() {
             <input required value={name} onChange={e => setName(e.target.value)} className="dh-input" placeholder={lang === 'ar' ? 'محمد أحمد' : 'John Doe'} />
           </Field>
 
-          <div className="relative phone-input-container">
+          <div>
             <label className="text-xs uppercase tracking-widest text-neutral-500 mb-2 block">{t('phone')}</label>
-            <PhoneInput
-              defaultCountry="lb"
-              value={phone}
-              onChange={(p) => setPhone(p)}
-              inputClassName="dh-phone-input"
-              countrySelectorStyleProps={{
-                buttonClassName: 'dh-country-selector',
-              }}
-            />
+            <div className="flex gap-3">
+              <CountryCodeInput
+                countryList={countryList}
+                value={countryCode}
+                onChange={setCountryCode}
+              />
+              <div className="flex-1">
+                <PhoneNumberInput
+                  id="phone-input"
+                  mask={activeMask}
+                  value={phoneNumber}
+                  onChange={setPhoneNumber}
+                  placeholder={lang === 'ar' ? '70 123 456' : '70 123 456'}
+                />
+              </div>
+            </div>
           </div>
 
           <Field icon={MapPin} label={t('address')}>
@@ -283,69 +297,6 @@ function CheckoutPage() {
           padding: 14px 44px 14px 14px;
         }
         .dh-input:focus { border-color: #F97316; }
-
-        /* Custom styles for react-international-phone */
-        :global(.phone-input-container .react-international-phone-input-container) {
-          width: 100%;
-          border: none;
-        }
-        :global(.dh-phone-input) {
-          width: 100% !important;
-          padding: 14px 14px 14px 52px !important;
-          border-radius: 16px !important;
-          border: 1px solid #262626 !important;
-          background: rgba(23, 23, 23, 0.6) !important;
-          font-size: 14px !important;
-          color: white !important;
-          outline: none !important;
-          height: auto !important;
-          transition: border-color 0.15s !important;
-        }
-        :global(html[dir='rtl'] .dh-phone-input) {
-          padding: 14px 52px 14px 14px !important;
-        }
-        :global(.dh-phone-input:focus) {
-          border-color: #F97316 !important;
-        }
-        :global(.dh-country-selector) {
-          position: absolute !important;
-          top: 0 !important;
-          bottom: 0 !important;
-          left: 0 !important;
-          z-index: 10 !important;
-          border: none !important;
-          background: transparent !important;
-          padding-left: 14px !important;
-          padding-right: 8px !important;
-          border-radius: 16px 0 0 16px !important;
-        }
-        :global(html[dir='rtl'] .dh-country-selector) {
-          left: auto !important;
-          right: 0 !important;
-          border-radius: 0 16px 16px 0 !important;
-        }
-        :global(.dh-country-selector:hover) {
-          background: rgba(255, 255, 255, 0.05) !important;
-        }
-        :global(.react-international-phone-country-selector-dropdown) {
-          background: #0A0A0A !important;
-          border: 1px solid #262626 !important;
-          border-radius: 12px !important;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-          color: white !important;
-          padding: 4px !important;
-        }
-        :global(.react-international-phone-country-selector-list-item) {
-          border-radius: 8px !important;
-          margin-bottom: 2px !important;
-        }
-        :global(.react-international-phone-country-selector-list-item--selected) {
-          background: #F97316 !important;
-          color: white !important;
-        }
-        :global(.react-international-phone-country-selector-list-item:hover:not(.react-international-phone-country-selector-list-item--selected)) {
-          background: #1a1a1a !important;
-        }
       `}</style>
     </div>
   );
