@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowLeft, User, Phone, MapPin, Check, Loader2 } from 'lucide-react';
+import { PhoneInput } from 'react-international-phone';
+import 'react-international-phone/style.css';
 import Header from '@/components/Header';
 import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
@@ -195,9 +197,18 @@ function CheckoutPage() {
             <input required value={name} onChange={e => setName(e.target.value)} className="dh-input" placeholder={lang === 'ar' ? 'محمد أحمد' : 'John Doe'} />
           </Field>
 
-          <Field icon={Phone} label={t('phone')}>
-            <input required type="tel" value={phone} onChange={e => setPhone(e.target.value)} className="dh-input no-flip" placeholder="+961 70 123 456" />
-          </Field>
+          <div className="relative phone-input-container">
+            <label className="text-xs uppercase tracking-widest text-neutral-500 mb-2 block">{t('phone')}</label>
+            <PhoneInput
+              defaultCountry="lb"
+              value={phone}
+              onChange={(p) => setPhone(p)}
+              inputClassName="dh-phone-input"
+              countrySelectorStyleProps={{
+                buttonClassName: 'dh-country-selector',
+              }}
+            />
+          </div>
 
           <Field icon={MapPin} label={t('address')}>
             <textarea required rows={3} value={address} onChange={e => setAddress(e.target.value)} className="dh-input resize-none" placeholder={lang === 'ar' ? 'الشارع، المبنى، الطابق...' : 'Street, building, floor, landmark...'} />
@@ -272,6 +283,69 @@ function CheckoutPage() {
           padding: 14px 44px 14px 14px;
         }
         .dh-input:focus { border-color: #F97316; }
+
+        /* Custom styles for react-international-phone */
+        :global(.phone-input-container .react-international-phone-input-container) {
+          width: 100%;
+          border: none;
+        }
+        :global(.dh-phone-input) {
+          width: 100% !important;
+          padding: 14px 14px 14px 52px !important;
+          border-radius: 16px !important;
+          border: 1px solid #262626 !important;
+          background: rgba(23, 23, 23, 0.6) !important;
+          font-size: 14px !important;
+          color: white !important;
+          outline: none !important;
+          height: auto !important;
+          transition: border-color 0.15s !important;
+        }
+        :global(html[dir='rtl'] .dh-phone-input) {
+          padding: 14px 52px 14px 14px !important;
+        }
+        :global(.dh-phone-input:focus) {
+          border-color: #F97316 !important;
+        }
+        :global(.dh-country-selector) {
+          position: absolute !important;
+          top: 0 !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          z-index: 10 !important;
+          border: none !important;
+          background: transparent !important;
+          padding-left: 14px !important;
+          padding-right: 8px !important;
+          border-radius: 16px 0 0 16px !important;
+        }
+        :global(html[dir='rtl'] .dh-country-selector) {
+          left: auto !important;
+          right: 0 !important;
+          border-radius: 0 16px 16px 0 !important;
+        }
+        :global(.dh-country-selector:hover) {
+          background: rgba(255, 255, 255, 0.05) !important;
+        }
+        :global(.react-international-phone-country-selector-dropdown) {
+          background: #0A0A0A !important;
+          border: 1px solid #262626 !important;
+          border-radius: 12px !important;
+          box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+          color: white !important;
+          padding: 4px !important;
+        }
+        :global(.react-international-phone-country-selector-list-item) {
+          border-radius: 8px !important;
+          margin-bottom: 2px !important;
+        }
+        :global(.react-international-phone-country-selector-list-item--selected) {
+          background: #F97316 !important;
+          color: white !important;
+        }
+        :global(.react-international-phone-country-selector-list-item:hover:not(.react-international-phone-country-selector-list-item--selected)) {
+          background: #1a1a1a !important;
+        }
       `}</style>
     </div>
   );

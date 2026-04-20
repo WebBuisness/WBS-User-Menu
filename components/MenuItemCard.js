@@ -11,15 +11,21 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
 
   return (
     <motion.div
-      onClick={() => onOpen(item)}
+      onClick={() => available && onOpen(item)}
       role="button"
-      tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpen(item); }}
+      tabIndex={available ? 0 : -1}
+      onKeyDown={(e) => {
+        if (available && (e.key === 'Enter' || e.key === ' ')) onOpen(item);
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.7), ease: [0.23, 1, 0.32, 1] }}
-      whileTap={{ scale: 0.97 }}
-      className="relative text-left bg-neutral-900 rounded-3xl overflow-hidden border border-neutral-800/80 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300 group cursor-pointer flex flex-col"
+      whileTap={available ? { scale: 0.97 } : {}}
+      className={`relative text-left bg-neutral-900 rounded-3xl overflow-hidden border border-neutral-800/80 transition-all duration-300 group flex flex-col ${
+        available
+          ? 'hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/5 cursor-pointer'
+          : 'cursor-not-allowed opacity-80'
+      }`}
     >
       {/* Image */}
       <div className="relative aspect-[4/3] bg-neutral-800 overflow-hidden shrink-0">

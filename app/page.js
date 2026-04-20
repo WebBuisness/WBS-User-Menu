@@ -9,9 +9,7 @@ import WhatsAppBubble from '@/components/WhatsAppBubble';
 import MenuItemCard from '@/components/MenuItemCard';
 import ItemSheet from '@/components/ItemSheet';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
-import NotificationBanner from '@/components/NotificationBanner';
 import Footer from '@/components/Footer';
-import usePushNotifications from '@/hooks/usePushNotifications';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
@@ -21,7 +19,7 @@ import { isRestaurantOpen } from '@/lib/utils';
 function Home() {
   const { lang, t, isRTL } = useLang();
   const { addItem } = useCart();
-  usePushNotifications(); // registers SW + asks for notification permission
+
 
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
@@ -212,7 +210,7 @@ function Home() {
 
       <WhatsAppBubble phone={whatsapp} />
       <PWAInstallPrompt />
-      <NotificationBanner />
+
     </div>
   );
 }

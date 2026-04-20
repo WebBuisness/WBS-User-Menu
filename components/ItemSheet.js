@@ -184,14 +184,20 @@ export default function ItemSheet({ item, open, onClose, onAdd, isOpen = true })
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-neutral-950 via-neutral-950 to-transparent safe-bottom">
               <button
                 onClick={handleAdd}
-                disabled={!isOpen}
+                disabled={!isOpen || !item.available}
                 className={`w-full py-4 rounded-2xl text-white font-display font-bold text-base flex items-center justify-between px-6 shadow-xl transition ${
-                  isOpen 
+                  (isOpen && item.available)
                     ? 'btn-shimmer shadow-orange-500/20' 
                     : 'bg-neutral-800 text-neutral-500 shadow-none cursor-not-allowed'
                 }`}
               >
-                <span>{isOpen ? t('addToCart') : (lang === 'ar' ? 'المطعم مغلق' : 'Restaurant Closed')}</span>
+                <span>
+                  {!isOpen 
+                    ? (lang === 'ar' ? 'المطعم مغلق' : 'Restaurant Closed')
+                    : !item.available
+                    ? (lang === 'ar' ? 'نفذت الكمية' : 'Sold Out')
+                    : t('addToCart')}
+                </span>
                 <span className="no-flip">${total.toFixed(2)}</span>
               </button>
             </div>
