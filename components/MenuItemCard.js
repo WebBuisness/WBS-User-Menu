@@ -1,73 +1,114 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Plus, Star } from 'lucide-react';
+import { Plus, Star, Flame } from 'lucide-react';
 
 export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0, isOpen = true }) {
   const name = lang === 'ar' ? item.name_ar : item.name_en;
   const desc = lang === 'ar' ? item.desc_ar : item.desc_en;
   const available = item.available && isOpen;
+  const isPopular = item.rating >= 4.8 && item.rating_count >= 100;
 
   return (
-    <motion.button
+    <motion.div
       onClick={() => onOpen(item)}
-      initial={{ opacity: 0, y: 14 }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') onOpen(item); }}
+      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.05, 0.6), ease: 'easeOut' }}
-      whileTap={{ scale: 0.98 }}
-      className="relative text-left bg-neutral-900/60 rounded-3xl overflow-hidden border border-neutral-800 hover:border-neutral-700 transition group"
+      transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.7), ease: [0.23, 1, 0.32, 1] }}
+      whileTap={{ scale: 0.97 }}
+      className="relative text-left bg-neutral-900 rounded-3xl overflow-hidden border border-neutral-800/80 hover:border-orange-500/30 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300 group cursor-pointer flex flex-col"
     >
-      <div className="relative aspect-[4/3] bg-neutral-800 overflow-hidden">
-        {item.image_url && (
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-neutral-800 overflow-hidden shrink-0">
+        {item.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={item.image_url}
             alt={name}
             loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+            className="w-full h-full object-cover group-hover:scale-[1.07] transition-transform duration-700 ease-out"
           />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-4xl">🌯</div>
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
-        {/* Rating badge */}
-        {item.rating > 0 && (
-          <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-black/60 backdrop-blur rounded-full px-2 py-1 text-xs">
-            <Star className="w-3 h-3 fill-orange-500 text-orange-500" />
-            <span className="font-semibold">{Number(item.rating).toFixed(1)}</span>
+        {/* Rich gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-neutral-900/20 to-transparent" />
+
+        {/* Top badges row */}
+        <div className="absolute top-2.5 inset-x-2.5 flex items-center justify-between">
+          {/* Rating */}
+          {item.rating > 0 && (
+            <div className="flex items-center gap-1 bg-black/70 backdrop-blur-sm rounded-full px-2 py-1">
+              <Star className="w-2.5 h-2.5 fill-orange-500 text-orange-500" />
+              <span className="text-[10px] font-bold text-white">{Number(item.rating).toFixed(1)}</span>
+            </div>
+          )}
+
+          {/* Popular badge */}
+          {isPopular && (
+            <div className="flex items-center gap-1 bg-orange-500/90 backdrop-blur-sm rounded-full px-2 py-1 ms-auto">
+              <Flame className="w-2.5 h-2.5 text-black" />
+              <span className="text-[10px] font-bold text-black uppercase tracking-wide">
+                {lang === 'ar' ? 'الأكثر طلباً' : 'Popular'}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {/* Combo badge on image bottom */}
+        {item.has_combo && available && (
+          <div className="absolute bottom-2 start-2.5">
+            <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white/80">
+              + Combo
+            </span>
           </div>
         )}
 
-        {/* Sold out overlay */}
+        {/* Sold out / Closed overlay */}
         {!available && (
-          <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <span className="px-3 py-1.5 rounded-full bg-neutral-800 text-neutral-300 text-[10px] font-bold uppercase tracking-wider border border-neutral-700">
-              {!isOpen ? (lang === 'ar' ? 'مغلق حالياً' : 'Closed Now') : (lang === 'ar' ? 'نفذت الكمية' : 'Sold Out')}
+          <div className="absolute inset-0 bg-black/65 backdrop-grayscale flex items-center justify-center">
+            <span className="px-3 py-1.5 rounded-full bg-neutral-900/90 text-neutral-300 text-[10px] font-bold uppercase tracking-widest border border-neutral-700 shadow-xl">
+              {!isOpen
+                ? (lang === 'ar' ? 'مغلق الآن' : 'Closed Now')
+                : (lang === 'ar' ? 'نفذت الكمية' : 'Sold Out')}
             </span>
           </div>
         )}
       </div>
 
-      <div className="p-3.5 pb-4">
+      {/* Content */}
+      <div className="flex flex-col flex-1 px-4 pt-3.5 pb-12">
+        {/* Name + Price */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display font-bold text-base leading-tight line-clamp-1">{name}</h3>
-          <span className="font-display font-bold text-orange-500 text-base shrink-0 no-flip">${Number(item.price).toFixed(2)}</span>
+          <h3 className="font-display font-bold text-[15px] leading-snug line-clamp-2 flex-1">{name}</h3>
+          <span className="font-display font-extrabold text-orange-500 text-sm shrink-0 no-flip mt-0.5">
+            ${Number(item.price).toFixed(2)}
+          </span>
         </div>
-        <p className="text-xs text-neutral-400 mt-1 line-clamp-2 min-h-[2rem]">{desc}</p>
+
+        {/* Description */}
+        {desc && (
+          <p className="text-[11px] text-neutral-500 mt-1.5 leading-relaxed line-clamp-2 flex-1">{desc}</p>
+        )}
       </div>
 
-      {/* Quick-add button */}
+      {/* Quick-add button — floated over bottom-right of content */}
       <button
         onClick={(e) => { e.stopPropagation(); if (available) onQuickAdd(item); }}
         disabled={!available}
-        className={`absolute bottom-3 end-3 w-10 h-10 rounded-full flex items-center justify-center transition ${
+        aria-label={lang === 'ar' ? 'أضف إلى السلة' : 'Quick add'}
+        className={`absolute bottom-3.5 end-3.5 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg ${
           available
-            ? 'bg-orange-500 hover:bg-orange-600 active:scale-90 shadow-lg shadow-orange-500/30'
-            : 'bg-neutral-800 cursor-not-allowed opacity-50'
+            ? 'bg-orange-500 hover:bg-orange-400 active:scale-90 shadow-orange-500/40 hover:shadow-orange-400/50'
+            : 'bg-neutral-800 cursor-not-allowed opacity-40'
         }`}
-        aria-label="Quick add"
       >
-        <Plus className="w-5 h-5 text-black" strokeWidth={3} />
+        <Plus className="w-4 h-4 text-black" strokeWidth={3.5} />
       </button>
-    </motion.button>
+    </motion.div>
   );
 }

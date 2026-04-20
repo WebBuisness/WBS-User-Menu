@@ -1,5 +1,5 @@
 import './globals.css';
-import { Inter, Bricolage_Grotesque } from 'next/font/google';
+import { Inter, Bricolage_Grotesque, Noto_Kufi_Arabic } from 'next/font/google';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -10,6 +10,13 @@ const inter = Inter({
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
   variable: '--font-bricolage',
+  display: 'swap',
+});
+
+const notoKufi = Noto_Kufi_Arabic({
+  subsets: ['arabic'],
+  weight: ['400', '500', '700', '900'],
+  variable: '--font-arabic',
   display: 'swap',
 });
 
@@ -39,7 +46,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${inter.variable} ${bricolage.variable} dark`}>
+    <html lang="en" className={`${inter.variable} ${bricolage.variable} ${notoKufi.variable} dark`}>
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

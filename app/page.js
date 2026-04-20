@@ -10,6 +10,7 @@ import MenuItemCard from '@/components/MenuItemCard';
 import ItemSheet from '@/components/ItemSheet';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import NotificationBanner from '@/components/NotificationBanner';
+import Footer from '@/components/Footer';
 import usePushNotifications from '@/hooks/usePushNotifications';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/lib/i18n';
@@ -109,10 +110,14 @@ function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <p className="text-orange-500 text-xs uppercase tracking-[0.25em] font-semibold">
+          <p className={`text-orange-500 text-xs uppercase font-semibold ${lang === 'ar' ? 'tracking-normal text-sm' : 'tracking-[0.25em]'}`}>
             {t('tagline')}
           </p>
-          <h1 className="font-display font-black text-4xl sm:text-5xl leading-[0.95] mt-2 tracking-tight">
+          <h1 className={`font-display font-black leading-[0.95] mt-2 tracking-tight ${
+            lang === 'ar'
+              ? 'text-4xl sm:text-5xl leading-snug mb-6'
+              : 'text-4xl sm:text-5xl'
+          }`}>
             {lang === 'ar' ? (
               <>طعم <span className="text-orange-500">حقيقي</span>,<br />نكهة <span className="text-orange-500">أصيلة</span>.</>
             ) : (
@@ -155,7 +160,7 @@ function Home() {
       </div>
 
       {/* Items grid */}
-      <main className="max-w-2xl mx-auto px-4 pt-4">
+      <main className="max-w-2xl mx-auto px-4 pt-5 pb-6">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <motion.div
@@ -171,7 +176,7 @@ function Home() {
               key={activeCat + search}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="grid grid-cols-2 gap-3 sm:gap-4"
+              className="grid grid-cols-2 gap-4 sm:gap-5"
             >
               {filteredItems.map((item, idx) => (
                 <MenuItemCard
@@ -195,10 +200,7 @@ function Home() {
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="py-8 text-center text-xs tracking-widest uppercase text-neutral-600 font-medium">
-        Built with <span className="text-red-500">♥</span> by Baraa &amp; Ziad Nahouli
-      </footer>
+      <Footer lang={lang} />
 
       <ItemSheet
         item={sheetItem}
