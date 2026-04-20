@@ -9,6 +9,7 @@ import Header from '@/components/Header';
 import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
+import { isRestaurantOpen } from '@/lib/utils';
 
 function CheckoutPage() {
   const router = useRouter();
@@ -19,8 +20,9 @@ function CheckoutPage() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [promo, setPromo] = useState(null);
-  const [whatsapp, setWhatsapp] = useState('961XXXXXXXX');
+  const [whatsapp, setWhatsapp] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     const p = localStorage.getItem('dh_promo');
@@ -30,8 +32,19 @@ function CheckoutPage() {
     // fetch whatsapp setting
     (async () => {
       try {
-        const { data } = await supabase.from('settings').select('*').eq('key', 'whatsapp_number').maybeSingle();
-        if (data?.value) setWhatsapp(data.value);
+        const { data } = await supabase.from('settings').select('*');
+        if (data) {
+          const wa = data.find(s => s.key === 'whatsapp_number')?.value;
+          if (wa) setWhatsapp(wa);
+          
+          const manualOpen = data.find(s => s.key === 'restaurant_open')?.value;
+          const rawSchedule = data.find(s => s.key === 'opening_hours')?.value;
+          let parsedSchedule = null;
+          if (rawSchedule) {
+            try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
+          }
+          setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
+        }
       } catch {}
     })();
   }, []);
@@ -78,6 +91,10 @@ function CheckoutPage() {
   const placeOrder = async (e) => {
     e.preventDefault();
     if (!name.trim() || !phone.trim() || !address.trim()) return;
+    if (!isOpen) {
+      alert(lang === 'ar' ? 'المطعم مغلق حالياً، لا يمكن استقبال طلبات.' : 'The restaurant is currently closed. We cannot take orders.');
+      return;
+    }
     setSubmitting(true);
 
     const orderPayload = {
@@ -128,7 +145,12 @@ function CheckoutPage() {
 
     // Build + open WhatsApp
     const msg = buildWhatsAppMessage(orderNo);
-    const phoneClean = (whatsapp || '').replace(/\D/g, '') || '961000000000';
+    const phoneClean = (whatsapp || '').replace(/\D/g, '');
+    if (!phoneClean) {
+      console.error('WhatsApp number is missing in settings');
+      alert('Error: Restaurant WhatsApp number is not configured.');
+      return;
+    }
     const waUrl = `https://wa.me/${phoneClean}?text=${encodeURIComponent(msg)}`;
 
     // Clear cart + promo
@@ -209,6 +231,8 @@ function CheckoutPage() {
             >
               {submitting ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> {t('loading')}</>
+              ) : !isOpen ? (
+                <>{lang === 'ar' ? 'المطعم مغلق حالياً' : 'Restaurant Closed'}</>
               ) : (
                 <><Check className="w-5 h-5" /> {t('placeOrder')} · <span className="no-flip">${total.toFixed(2)}</span></>
               )}

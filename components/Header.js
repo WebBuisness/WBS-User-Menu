@@ -1,27 +1,64 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ShoppingBag, Languages } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ShoppingBag, Languages, Clock, ChevronDown } from 'lucide-react';
+import { useState } from 'react';
 import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
+import { formatOpeningHours } from '@/lib/utils';
 
-export default function Header({ showCart = true }) {
+export default function Header({ showCart = true, isOpen = true, schedule = null }) {
   const { count, mounted } = useCart();
-  const { lang, toggle } = useLang();
+  const { lang, toggle, t } = useLang();
+  const [showHours, setShowHours] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-black/80 backdrop-blur-xl border-b border-neutral-900 safe-top">
       <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition">
-            <span className="font-display font-black text-sm text-black">DH</span>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition">
+              <span className="font-display font-black text-sm text-black">DH</span>
+            </div>
+            <div className="hidden sm:flex flex-col leading-none">
+              <span className="font-display font-extrabold text-lg tracking-tight no-flip">Döner <span className="text-orange-500">House</span></span>
+              <span className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5 no-flip">Serious taste</span>
+            </div>
+          </Link>
+
+          {/* Status Indicator */}
+          <div className="relative">
+            <button
+              onClick={() => setShowHours(!showHours)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-neutral-900/50 border border-neutral-800 hover:border-neutral-700 transition"
+            >
+              <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500'}`} />
+              <span className="text-[10px] font-bold uppercase tracking-wider text-neutral-300">
+                {isOpen ? (t('open') || 'Open') : (t('closed') || 'Closed')}
+              </span>
+              <ChevronDown className={`w-3 h-3 text-neutral-500 transition ${showHours ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+              {showHours && schedule && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  className="absolute top-full left-0 mt-2 p-3 w-48 rounded-2xl bg-neutral-900 border border-neutral-800 shadow-2xl z-50 text-left"
+                >
+                  <p className="text-[10px] uppercase tracking-widest text-neutral-500 mb-2 flex items-center gap-1">
+                    <Clock className="w-3 h-3" /> {t('workingHours') || 'Working Hours'}
+                  </p>
+                  <pre className="text-[11px] font-sans text-neutral-300 leading-relaxed whitespace-pre-line">
+                    {formatOpeningHours(schedule, lang)}
+                  </pre>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-          <div className="flex flex-col leading-none">
-            <span className="font-display font-extrabold text-lg tracking-tight no-flip">Döner <span className="text-orange-500">House</span></span>
-            <span className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5 no-flip">Serious taste</span>
-          </div>
-        </Link>
+        </div>
 
         <div className="flex items-center gap-2">
           <button

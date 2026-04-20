@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { X, Minus, Plus, Star } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 
-export default function ItemSheet({ item, open, onClose, onAdd }) {
+export default function ItemSheet({ item, open, onClose, onAdd, isOpen = true }) {
   const { lang, t } = useLang();
   const [qty, setQty] = useState(1);
   const [isCombo, setIsCombo] = useState(false);
@@ -184,9 +184,14 @@ export default function ItemSheet({ item, open, onClose, onAdd }) {
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-neutral-950 via-neutral-950 to-transparent safe-bottom">
               <button
                 onClick={handleAdd}
-                className="w-full py-4 rounded-2xl btn-shimmer text-white font-display font-bold text-base flex items-center justify-between px-6 shadow-xl shadow-orange-500/20"
+                disabled={!isOpen}
+                className={`w-full py-4 rounded-2xl text-white font-display font-bold text-base flex items-center justify-between px-6 shadow-xl transition ${
+                  isOpen 
+                    ? 'btn-shimmer shadow-orange-500/20' 
+                    : 'bg-neutral-800 text-neutral-500 shadow-none cursor-not-allowed'
+                }`}
               >
-                <span>{t('addToCart')}</span>
+                <span>{isOpen ? t('addToCart') : (lang === 'ar' ? 'المطعم مغلق' : 'Restaurant Closed')}</span>
                 <span className="no-flip">${total.toFixed(2)}</span>
               </button>
             </div>

@@ -8,10 +8,12 @@ import SplashScreen from '@/components/SplashScreen';
 import WhatsAppBubble from '@/components/WhatsAppBubble';
 import MenuItemCard from '@/components/MenuItemCard';
 import ItemSheet from '@/components/ItemSheet';
+import PWAInstallPrompt from '@/components/PWAInstallPrompt';
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';
 import { FALLBACK_CATEGORIES, FALLBACK_ITEMS } from '@/lib/menu-data';
+import { isRestaurantOpen } from '@/lib/utils';
 
 function Home() {
   const { lang, t, isRTL } = useLang();
@@ -24,6 +26,8 @@ function Home() {
   const [search, setSearch] = useState('');
   const [sheetItem, setSheetItem] = useState(null);
   const [whatsapp, setWhatsapp] = useState('');
+  const [isOpen, setIsOpen] = useState(true);
+  const [schedule, setSchedule] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -41,12 +45,21 @@ function Home() {
         setItems(its);
 
         const wa = settingsRes.data?.find(s => s.key === 'whatsapp_number')?.value;
-        setWhatsapp(wa || '961XXXXXXXX');
+        setWhatsapp(wa || '');
+
+        const manualOpen = settingsRes.data?.find(s => s.key === 'restaurant_open')?.value;
+        const rawSchedule = settingsRes.data?.find(s => s.key === 'opening_hours')?.value;
+        let parsedSchedule = null;
+        if (rawSchedule) {
+          try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
+        }
+        setSchedule(parsedSchedule);
+        setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
       } catch (e) {
         console.warn('Supabase fetch failed, using fallback', e);
         setCategories(FALLBACK_CATEGORIES);
         setItems(FALLBACK_ITEMS);
-        setWhatsapp('961XXXXXXXX');
+        setWhatsapp('');
       } finally {
         setLoading(false);
       }
@@ -84,7 +97,7 @@ function Home() {
   return (
     <div className="min-h-screen pb-24">
       <SplashScreen />
-      <Header />
+      <Header isOpen={isOpen} schedule={schedule} />
 
       {/* Hero */}
       <section className="px-4 pt-6 pb-4 max-w-2xl mx-auto">
@@ -165,6 +178,7 @@ function Home() {
                   onOpen={setSheetItem}
                   onQuickAdd={handleQuickAdd}
                   index={idx}
+                  isOpen={isOpen}
                 />
               ))}
             </motion.div>
@@ -183,9 +197,11 @@ function Home() {
         open={!!sheetItem}
         onClose={() => setSheetItem(null)}
         onAdd={addItem}
+        isOpen={isOpen}
       />
 
       <WhatsAppBubble phone={whatsapp} />
+      <PWAInstallPrompt />
     </div>
   );
 }

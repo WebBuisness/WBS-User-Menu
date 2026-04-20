@@ -16,6 +16,15 @@ function CartPage() {
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError, setPromoError] = useState('');
   const [checkingPromo, setCheckingPromo] = useState(false);
+  const [mountedLocal, setMountedLocal] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('dh_promo');
+    if (saved) {
+      try { setPromoApplied(JSON.parse(saved)); } catch {}
+    }
+    setMountedLocal(true);
+  }, []);
 
   const discount = promoApplied
     ? promoApplied.discount_type === 'percent'
@@ -23,6 +32,12 @@ function CartPage() {
       : Math.min(Number(promoApplied.value), subtotal)
     : 0;
   const total = Math.max(0, subtotal - discount);
+
+  const removePromo = () => {
+    setPromoApplied(null);
+    setPromoInput('');
+    localStorage.removeItem('dh_promo');
+  };
 
   const applyPromo = async () => {
     const code = promoInput.trim().toUpperCase();
@@ -172,7 +187,12 @@ function CartPage() {
               </div>
               {promoError && <p className="text-red-400 text-xs mt-2">{promoError}</p>}
               {promoApplied && (
-                <p className="text-green-400 text-xs mt-2">✓ {t('promoApplied')} ({promoApplied.code})</p>
+                <div className="flex items-center justify-between mt-2 p-2 rounded-lg bg-green-500/10 border border-green-500/20">
+                  <p className="text-green-400 text-xs truncate">✓ {t('promoApplied')} ({promoApplied.code})</p>
+                  <button onClick={removePromo} className="text-green-400 hover:text-white text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded-md bg-green-500/20 transition">
+                    {t('remove') || 'Remove'}
+                  </button>
+                </div>
               )}
             </div>
 

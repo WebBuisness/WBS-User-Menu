@@ -4,6 +4,7 @@
 
 -- Settings (update WhatsApp number to your real number!)
 insert into settings(key,value) values ('whatsapp_number','961XXXXXXXX') on conflict (key) do nothing;
+insert into settings(key,value) values ('opening_hours','{"0":["10:00","22:00"],"1":["10:00","22:00"],"2":["10:00","22:00"],"3":["10:00","22:00"],"4":["10:00","22:00"],"5":["10:00","22:00"],"6":["10:00","22:00"]}') on conflict (key) do nothing;
 insert into settings(key,value) values ('restaurant_open','true') on conflict (key) do nothing;
 
 -- Categories

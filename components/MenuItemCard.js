@@ -3,10 +3,10 @@
 import { motion } from 'framer-motion';
 import { Plus, Star } from 'lucide-react';
 
-export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0 }) {
+export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0, isOpen = true }) {
   const name = lang === 'ar' ? item.name_ar : item.name_en;
   const desc = lang === 'ar' ? item.desc_ar : item.desc_en;
-  const available = item.available;
+  const available = item.available && isOpen;
 
   return (
     <motion.button
@@ -40,8 +40,8 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
         {/* Sold out overlay */}
         {!available && (
           <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-            <span className="px-3 py-1.5 rounded-full bg-neutral-800 text-neutral-300 text-xs font-bold uppercase tracking-wider border border-neutral-700">
-              Sold Out
+            <span className="px-3 py-1.5 rounded-full bg-neutral-800 text-neutral-300 text-[10px] font-bold uppercase tracking-wider border border-neutral-700">
+              {!isOpen ? (lang === 'ar' ? 'مغلق حالياً' : 'Closed Now') : (lang === 'ar' ? 'نفذت الكمية' : 'Sold Out')}
             </span>
           </div>
         )}
