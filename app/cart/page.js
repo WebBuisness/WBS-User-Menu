@@ -71,15 +71,11 @@ function CartPage() {
         .eq('code', code)
         .eq('active', true)
         .maybeSingle();
-      if (error || !data) {
-        // Fallback local promos for demo
-        const demo = { 'WELCOME10': { code: 'WELCOME10', discount_type: 'percent', value: 10 }, 'SAVE5': { code: 'SAVE5', discount_type: 'fixed', value: 5 } };
-        if (demo[code]) {
-          setPromoApplied(demo[code]);
-          localStorage.setItem('dh_promo', JSON.stringify(demo[code]));
-        } else {
-          setPromoError(t('invalidPromo'));
-        }
+      if (error) {
+        console.error('Supabase Promo Error:', error);
+        setPromoError(t('invalidPromo'));
+      } else if (!data) {
+        setPromoError(t('invalidPromo'));
       } else {
         setPromoApplied(data);
         localStorage.setItem('dh_promo', JSON.stringify(data));
