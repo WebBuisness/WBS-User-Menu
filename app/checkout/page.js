@@ -20,6 +20,8 @@ function CheckoutPage() {
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
   const [promo, setPromo] = useState(null);
+  const [whatsappTemplate, setWhatsappTemplate] = useState('');
+  const [schedule, setSchedule] = useState(null);
   const [whatsapp, setWhatsapp] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
@@ -39,11 +41,14 @@ function CheckoutPage() {
           
           const manualOpen = data.find(s => s.key === 'restaurant_open')?.value;
           const rawSchedule = data.find(s => s.key === 'opening_hours')?.value;
+          const template = data.find(s => s.key === 'whatsapp_template')?.value;
           let parsedSchedule = null;
           if (rawSchedule) {
             try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
           }
+          setSchedule(parsedSchedule);
           setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
+          if (template) setWhatsappTemplate(template);
         }
       } catch {}
     })();
@@ -70,6 +75,17 @@ function CheckoutPage() {
       const note = it.note ? `\n   ✎ ${it.note}` : '';
       return `${it.qty}× ${nm}${combo} — $${(unit * it.qty).toFixed(2)}${note}`;
     }).join('\n');
+
+    if (whatsappTemplate) {
+      let msg = whatsappTemplate;
+      msg = msg.split('{{orderNo}}').join(orderNo);
+      msg = msg.split('{{items}}').join(lines);
+      msg = msg.split('{{total}}').join(total.toFixed(2));
+      msg = msg.split('{{name}}').join(name);
+      msg = msg.split('{{phone}}').join(phone);
+      msg = msg.split('{{address}}').join(address);
+      return msg;
+    }
 
     return [
       `🍖 *New Order — Döner House*`,
@@ -164,7 +180,7 @@ function CheckoutPage() {
 
   return (
     <div className="min-h-screen pb-36">
-      <Header showCart={false} />
+      <Header showCart={false} isOpen={isOpen} schedule={schedule} />
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
         <div className="flex items-center gap-3 mb-5">

@@ -8,6 +8,7 @@ import Header from '@/components/Header';
 import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
+import { isRestaurantOpen } from '@/lib/utils';
 
 function CartPage() {
   const { lang, t, isRTL } = useLang();
@@ -17,6 +18,8 @@ function CartPage() {
   const [promoError, setPromoError] = useState('');
   const [checkingPromo, setCheckingPromo] = useState(false);
   const [mountedLocal, setMountedLocal] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
+  const [schedule, setSchedule] = useState(null);
 
   useEffect(() => {
     const saved = localStorage.getItem('dh_promo');
@@ -24,12 +27,29 @@ function CartPage() {
       try { setPromoApplied(JSON.parse(saved)); } catch {}
     }
     setMountedLocal(true);
+
+    // fetch settings for schedule
+    (async () => {
+      try {
+        const { data } = await supabase.from('settings').select('*');
+        if (data) {
+          const manualOpen = data.find(s => s.key === 'restaurant_open')?.value;
+          const rawSchedule = data.find(s => s.key === 'opening_hours')?.value;
+          let parsedSchedule = null;
+          if (rawSchedule) {
+            try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
+          }
+          setSchedule(parsedSchedule);
+          setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
+        }
+      } catch {}
+    })();
   }, []);
 
   const discount = promoApplied
     ? promoApplied.discount_type === 'percent'
-      ? (subtotal * Number(promoApplied.value)) / 100
-      : Math.min(Number(promoApplied.value), subtotal)
+      ? (subtotal * (Number(promoApplied.value) || 0)) / 100
+      : Math.min(Number(promoApplied.value) || 0, subtotal)
     : 0;
   const total = Math.max(0, subtotal - discount);
 
@@ -73,7 +93,7 @@ function CartPage() {
 
   return (
     <div className="min-h-screen pb-36">
-      <Header />
+      <Header isOpen={isOpen} schedule={schedule} />
 
       <main className="max-w-2xl mx-auto px-4 pt-5">
         <div className="flex items-center gap-3 mb-5">
@@ -196,24 +216,25 @@ function CartPage() {
               )}
             </div>
 
-            {/* Summary */}
-            <div className="mt-6 p-4 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-2.5 text-sm">
-              <div className="flex justify-between">
-                <span className="text-neutral-400">{t('subtotal')}</span>
-                <span className="font-semibold no-flip">${subtotal.toFixed(2)}</span>
-              </div>
-              {discount > 0 && (
-                <div className="flex justify-between text-green-400">
-                  <span>{t('discount')}</span>
-                  <span className="font-semibold no-flip">-${discount.toFixed(2)}</span>
+            {mounted && items.length > 0 && (
+              <div className="mt-6 p-4 rounded-2xl bg-neutral-900/60 border border-neutral-800 space-y-2.5 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-neutral-400">{t('subtotal')}</span>
+                  <span className="font-semibold no-flip">${subtotal.toFixed(2)}</span>
                 </div>
-              )}
-              <div className="h-px bg-neutral-800 my-1" />
-              <div className="flex justify-between text-lg">
-                <span className="font-display font-bold">{t('total')}</span>
-                <span className="font-display font-extrabold text-orange-500 no-flip">${total.toFixed(2)}</span>
+                {discount > 0 && (
+                  <div className="flex justify-between text-green-400">
+                    <span>{t('discount')}</span>
+                    <span className="font-semibold no-flip">-${discount.toFixed(2)}</span>
+                  </div>
+                )}
+                <div className="h-px bg-neutral-800 my-1" />
+                <div className="flex justify-between text-lg">
+                  <span className="font-display font-bold">{t('total')}</span>
+                  <span className="font-display font-extrabold text-orange-500 no-flip">${total.toFixed(2)}</span>
+                </div>
               </div>
-            </div>
+            )}
           </>
         )}
       </main>
