@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowLeft, User, Phone, MapPin, Check, Loader2 } from 'lucide-react';
+import { ArrowLeft, User, Phone, MapPin, Check, Loader2, Clock } from 'lucide-react';
 import { CountryCodeInput } from '@/components/PhoneInput/CountryCodeInput';
 import { PhoneNumberInput } from '@/components/PhoneInput/PhoneNumberInput';
 import { countryList } from '@/lib/countryList';
@@ -113,10 +113,6 @@ function CheckoutPage() {
   const placeOrder = async (e) => {
     e.preventDefault();
     if (!name.trim() || !phoneNumber.trim() || !address.trim()) return;
-    if (!isOpen) {
-      alert(lang === 'ar' ? 'المطعم مغلق حالياً، لا يمكن استقبال طلبات.' : 'The restaurant is currently closed. We cannot take orders.');
-      return;
-    }
     setSubmitting(true);
 
     const orderPayload = {
@@ -240,6 +236,23 @@ function CheckoutPage() {
             </label>
           </div>
 
+          {/* Closed notice */}
+          {!isOpen && (
+            <div className="p-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex gap-3 items-start">
+              <Clock className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
+              <div className="text-sm">
+                <p className="font-bold text-orange-500">
+                  {lang === 'ar' ? 'المطعم مغلق حالياً' : 'Restaurant Currently Closed'}
+                </p>
+                <p className="text-neutral-400 mt-0.5">
+                  {lang === 'ar' 
+                    ? 'يمكنك متابعة الطلب، وسنقوم بتجهيزه فور إعادة الفتح.' 
+                    : 'You can still place your order, and we will process it as soon as we reopen.'}
+                </p>
+              </div>
+            </div>
+          )}
+
           {/* Summary */}
           <div className="p-4 rounded-2xl bg-neutral-900/60 border border-neutral-800">
             <p className="text-xs uppercase tracking-widest text-neutral-500 mb-3">{t('orderSummary')}</p>
@@ -267,13 +280,11 @@ function CheckoutPage() {
           <div className="fixed bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black to-transparent safe-bottom z-30">
             <button
               type="submit"
-              disabled={submitting || !name || !phone || !address}
+              disabled={submitting || !name || !phoneNumber || !address}
               className="flex items-center justify-center gap-2 w-full py-4 rounded-2xl btn-shimmer text-white font-display font-bold text-base shadow-xl shadow-orange-500/30 disabled:opacity-50 max-w-2xl mx-auto"
             >
               {submitting ? (
                 <><Loader2 className="w-5 h-5 animate-spin" /> {t('loading')}</>
-              ) : !isOpen ? (
-                <>{lang === 'ar' ? 'المطعم مغلق حالياً' : 'Restaurant Closed'}</>
               ) : (
                 <><Check className="w-5 h-5" /> {t('placeOrder')} · <span className="no-flip">${total.toFixed(2)}</span></>
               )}
