@@ -32,7 +32,7 @@ export default function SplashScreen() {
             className="relative"
           >
             <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-2xl shadow-orange-500/40">
-              <span className="font-display font-black text-5xl text-black">DH</span>
+              <span className="font-display font-black text-5xl text-black">KB</span>
             </div>
             <motion.div
               className="absolute -inset-2 rounded-3xl border-2 border-orange-500/40"
@@ -47,7 +47,7 @@ export default function SplashScreen() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="font-display font-bold text-4xl mt-8 tracking-tight"
           >
-            Döner <span className="text-orange-500">House</span>
+            Karmesh <span className="text-orange-500">Broasted</span>
           </motion.h1>
 
           <motion.p

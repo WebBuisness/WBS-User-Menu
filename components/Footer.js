@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 // ============================================================
 
 const FOOTER_CONFIG = {
-  brandName: 'Döner House',
+  brandName: 'Karmesh Broasted',
   tagline: 'Serious taste, real flavor.',
   tagline_ar: 'طعم حقيقي، نكهة أصيلة.',
 
@@ -18,7 +18,7 @@ const FOOTER_CONFIG = {
   },
 
   links: [
-    // { label: 'Instagram', label_ar: 'انستقرام', href: 'https://instagram.com/donerhouse' },
+    // { label: 'Instagram', label_ar: 'انستقرام', href: 'https://instagram.com/karmeshbroasted' },
     // { label: 'WhatsApp', label_ar: 'واتساب', href: 'https://wa.me/966500000000' },
   ],
 
@@ -43,7 +43,7 @@ export default function Footer({ lang = 'en' }) {
         {/* Brand */}
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <span className="font-display font-black text-xs text-black no-flip">DH</span>
+            <span className="font-display font-black text-xs text-black no-flip">KB</span>
           </div>
           <span className="font-display font-extrabold text-base tracking-tight no-flip">
             {FOOTER_CONFIG.brandName.split(' ')[0]}{' '}

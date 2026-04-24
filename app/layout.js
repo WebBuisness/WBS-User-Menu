@@ -21,13 +21,13 @@ const notoKufi = Noto_Kufi_Arabic({
 });
 
 export const metadata = {
-  title: 'Döner House — Serious taste, real flavor',
-  description: 'Order authentic döner, burgers, hot dogs and more. Serious taste, real flavor.',
+  title: 'Karmesh Broasted — Serious taste, real flavor',
+  description: 'Order authentic broasted, burgers and more. Serious taste, real flavor.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Döner House',
+    title: 'Karmesh Broasted',
   },
   icons: {
     icon: '/icon.svg',

@@ -3,8 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowLeft, User, Phone, MapPin, Check, Loader2, Clock } from 'lucide-react';
+import { ArrowLeft, User, MapPin, Check, Loader2, Clock } from 'lucide-react';
 import { CountryCodeInput } from '@/components/PhoneInput/CountryCodeInput';
 import { PhoneNumberInput } from '@/components/PhoneInput/PhoneNumberInput';
 import { countryList } from '@/lib/countryList';
@@ -94,7 +93,7 @@ function CheckoutPage() {
     }
 
     return [
-      `🍖 *New Order — Döner House*`,
+      `🍖 *New Order — Karmesh Broasted*`,
       `🕢 Order #${orderNo}`,
       ``,
       `👤 *Name:* ${name}`,

@@ -2,11 +2,11 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { Download, X, Smartphone, ArrowRight } from 'lucide-react';
+import { Download, X, Smartphone } from 'lucide-react';
 import { useLang } from '@/lib/i18n';
 
 export default function PWAInstallPrompt() {
-  const { lang, t } = useLang();
+  const { lang } = useLang();
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [show, setShow] = useState(false);
 
@@ -79,7 +79,7 @@ export default function PWAInstallPrompt() {
               </div>
 
               <h3 className="font-display font-black text-xl tracking-tight">
-                {lang === 'ar' ? 'ثبت تطبيق Döner House' : 'Install Döner House'}
+                {lang === 'ar' ? 'ثبت تطبيق Karmesh Broasted' : 'Install Karmesh Broasted'}
               </h3>
               <p className="text-sm text-neutral-400 mt-2 leading-relaxed px-2">
                 {lang === 'ar' 

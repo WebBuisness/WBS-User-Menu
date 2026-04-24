@@ -17,7 +17,7 @@ import { FALLBACK_CATEGORIES, FALLBACK_ITEMS } from '@/lib/menu-data';
 import { isRestaurantOpen } from '@/lib/utils';
 
 function Home() {
-  const { lang, t, isRTL } = useLang();
+  const { lang, t } = useLang();
   const { addItem } = useCart();
 
 

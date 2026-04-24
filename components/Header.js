@@ -19,10 +19,10 @@ export default function Header({ showCart = true, isOpen = true, schedule = null
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-2.5 group">
             <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/30 group-hover:scale-105 transition">
-              <span className="font-display font-black text-sm text-black">DH</span>
+              <span className="font-display font-black text-sm text-black">KB</span>
             </div>
             <div className="hidden sm:flex flex-col leading-none">
-              <span className="font-display font-extrabold text-lg tracking-tight no-flip">Döner <span className="text-orange-500">House</span></span>
+              <span className="font-display font-extrabold text-lg tracking-tight no-flip">Karmesh <span className="text-orange-500">Broasted</span></span>
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5 no-flip">Serious taste</span>
             </div>
           </Link>

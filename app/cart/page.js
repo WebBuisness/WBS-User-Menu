@@ -17,7 +17,6 @@ function CartPage() {
   const [promoApplied, setPromoApplied] = useState(null);
   const [promoError, setPromoError] = useState('');
   const [checkingPromo, setCheckingPromo] = useState(false);
-  const [mountedLocal, setMountedLocal] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
   const [schedule, setSchedule] = useState(null);
 
@@ -26,8 +25,6 @@ function CartPage() {
     if (saved) {
       try { setPromoApplied(JSON.parse(saved)); } catch {}
     }
-    setMountedLocal(true);
-
     // fetch settings for schedule
     (async () => {
       try {

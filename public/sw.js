@@ -1,6 +1,6 @@
-// Service Worker for Döner House PWA
+// Service Worker for Karmesh Broasted PWA
 
-const CACHE_NAME = 'doner-house-v1';
+const CACHE_NAME = 'karmesh-broasted-v1';
 const OFFLINE_URL = '/offline.html';
 
 // === INSTALL ===
