@@ -1,0 +1,34 @@
+
+> nextjs-mongo-template@0.1.0 dev
+> next dev --hostname 0.0.0.0 --port 3000
+
+  ▲ Next.js 14.2.3
+  - Local:        http://localhost:3000
+  - Network:      http://0.0.0.0:3000
+
+ ✓ Starting...
+ ✓ Ready in 1677ms
+ ○ Compiling / ...
+ ✓ Compiled / in 10.7s (1489 modules)
+Supabase configuration is missing! { hasUrl: false, hasKey: false }
+ ⨯ Error: supabaseUrl is required.
+    at eval (./lib/supabase.js:15:85)
+    at (ssr)/./lib/supabase.js (/app/.next/server/app/page.js:272:1)
+    at __webpack_require__ (/app/.next/server/webpack-runtime.js:33:42)
+    at eval (./app/page.js:19:71)
+    at (ssr)/./app/page.js (/app/.next/server/app/page.js:140:1)
+    at Object.__webpack_require__ [as require] (/app/.next/server/webpack-runtime.js:33:42)
+    at JSON.parse (<anonymous>)
+digest: "381307866"
+ GET / 500 in 12250ms
+ ✓ Compiled in 1412ms (741 modules)
+ ✓ Compiled in 907ms (727 modules)
+ ✓ Compiled in 321ms
+ ○ Compiling / ...
+ ✓ Compiled / in 656ms (721 modules)
+Supabase configuration is missing! { hasUrl: false, hasKey: false }
+ GET / 200 in 1224ms
+ GET / 200 in 99ms
+ ✓ Compiled /_not-found in 444ms (1451 modules)
+Supabase configuration is missing! { hasUrl: false, hasKey: false }
+ GET /globals.css 404 in 541ms

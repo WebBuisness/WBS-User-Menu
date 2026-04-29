@@ -67,8 +67,8 @@ export default function ItemSheet({ item, open, onClose, onAdd, isOpen = true })
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
-            transition={{ type: 'spring', damping: 28, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-neutral-950 rounded-t-3xl max-h-[92vh] overflow-y-auto safe-bottom"
+            transition={{ type: 'spring', damping: 32, stiffness: 300, mass: 0.8 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-neutral-950 rounded-t-[2.5rem] max-h-[94vh] overflow-y-auto safe-bottom shadow-[0_-20px_50px_-12px_rgba(0,0,0,0.5)]"
           >
             {/* Drag handle */}
             <div className="sticky top-0 z-10 bg-neutral-950/95 backdrop-blur flex justify-center pt-2 pb-1">
@@ -83,10 +83,16 @@ export default function ItemSheet({ item, open, onClose, onAdd, isOpen = true })
             </button>
 
             {/* Image */}
-            <div className="relative aspect-[16/11] -mt-7">
+            <div className="relative aspect-[16/11] -mt-7 overflow-hidden">
               {item.image_url && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.image_url} alt={name} className="w-full h-full object-cover" />
+                <motion.img
+                  initial={{ scale: 1.2, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                  src={item.image_url}
+                  alt={name}
+                  className="w-full h-full object-cover"
+                />
               )}
               <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-neutral-950 to-transparent" />
             </div>
