@@ -19,9 +19,9 @@ function Home() {
   const { lang, t } = useLang();
   const { addItem } = useCart();
 
-  const [categories, setCategories] = useState([]);
-  const [items, setItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState(FALLBACK_CATEGORIES);
+  const [items, setItems] = useState(FALLBACK_ITEMS);
+  const [loading, setLoading] = useState(false);
   const [activeCat, setActiveCat] = useState('all');
   const [search, setSearch] = useState('');
   const [sheetItem, setSheetItem] = useState(null);

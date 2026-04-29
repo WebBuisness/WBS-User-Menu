@@ -18,9 +18,9 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
       onKeyDown={(e) => {
         if (available && (e.key === 'Enter' || e.key === ' ')) onOpen(item);
       }}
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={index < 4 ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5, delay: Math.min(index * 0.05, 0.5), ease: [0.23, 1, 0.32, 1] }}
+      transition={{ duration: 0.5, delay: index < 4 ? 0 : Math.min(index * 0.05, 0.5), ease: [0.23, 1, 0.32, 1] }}
       whileTap={available ? { scale: 0.96 } : {}}
       whileHover={available ? { y: -4 } : {}}
       className={`relative text-left bg-neutral-900 rounded-3xl overflow-hidden border border-neutral-800/80 transition-all duration-300 group flex flex-col ${
@@ -37,6 +37,7 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
             alt={name}
             fill
             priority={index < 4}
+            {...(index < 4 ? { fetchPriority: "high" } : {})}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
             className="object-cover group-hover:scale-[1.1] transition-transform duration-1000 ease-out"
           />
