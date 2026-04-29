@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Search } from 'lucide-react';
 import Header from '@/components/Header';
 import SplashScreen from '@/components/SplashScreen';
-import WhatsAppBubble from '@/components/WhatsAppBubble';
 import MenuItemCard from '@/components/MenuItemCard';
 import ItemSheet from '@/components/ItemSheet';
 import PWAInstallPrompt from '@/components/PWAInstallPrompt';
@@ -96,6 +95,11 @@ function Home() {
     });
   };
 
+  const handleCatClick = (id) => {
+    setActiveCat(id);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen pb-24">
       <SplashScreen />
@@ -142,14 +146,14 @@ function Home() {
       </section>
 
       {/* Category tabs */}
-      <div className="sticky top-[66px] z-30 bg-black/85 backdrop-blur-xl">
+      <div id="category-tabs" className="sticky top-[66px] z-30 bg-black/85 backdrop-blur-xl">
         <div className="max-w-2xl mx-auto px-4 py-3 overflow-x-auto no-scrollbar">
           <div className="flex gap-2 w-max">
-            <CatPill active={activeCat === 'all'} onClick={() => setActiveCat('all')}>
+            <CatPill active={activeCat === 'all'} onClick={() => handleCatClick('all')}>
               {t('all')}
             </CatPill>
             {categories.map(c => (
-              <CatPill key={c.id} active={activeCat === c.id} onClick={() => setActiveCat(c.id)}>
+              <CatPill key={c.id} active={activeCat === c.id} onClick={() => handleCatClick(c.id)}>
                 {lang === 'ar' ? c.name_ar : c.name_en}
               </CatPill>
             ))}
@@ -208,7 +212,6 @@ function Home() {
         isOpen={isOpen}
       />
 
-      <WhatsAppBubble phone={whatsapp} />
       <PWAInstallPrompt />
 
     </div>

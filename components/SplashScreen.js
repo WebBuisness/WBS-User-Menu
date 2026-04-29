@@ -47,7 +47,7 @@ export default function SplashScreen() {
             transition={{ delay: 0.6, duration: 0.6 }}
             className="font-display font-bold text-4xl mt-8 tracking-tight"
           >
-            Karmesh <span className="text-orange-500">Broasted</span>
+            WBS <span className="text-orange-500">Menu Demo</span>
           </motion.h1>
 
           <motion.p

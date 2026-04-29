@@ -79,7 +79,7 @@ export default function PWAInstallPrompt() {
               </div>
 
               <h3 className="font-display font-black text-xl tracking-tight">
-                {lang === 'ar' ? 'ثبت تطبيق Karmesh Broasted' : 'Install Karmesh Broasted'}
+                {lang === 'ar' ? 'ثبت تطبيق WBS Menu Demo' : 'Install WBS Menu Demo'}
               </h3>
               <p className="text-sm text-neutral-400 mt-2 leading-relaxed px-2">
                 {lang === 'ar' 

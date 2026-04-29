@@ -22,7 +22,7 @@ export default function Header({ showCart = true, isOpen = true, schedule = null
               <span className="font-display font-black text-sm text-black">KB</span>
             </div>
             <div className="hidden sm:flex flex-col leading-none">
-              <span className="font-display font-extrabold text-lg tracking-tight no-flip">Karmesh <span className="text-orange-500">Broasted</span></span>
+              <span className="font-display font-extrabold text-lg tracking-tight no-flip">WBS <span className="text-orange-500">Menu Demo</span></span>
               <span className="text-[10px] uppercase tracking-widest text-neutral-500 mt-0.5 no-flip">Serious taste</span>
             </div>
           </Link>

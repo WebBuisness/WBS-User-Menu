@@ -7,7 +7,7 @@ import { motion } from 'framer-motion';
 // ============================================================
 
 const FOOTER_CONFIG = {
-  brandName: 'Karmesh Broasted',
+  brandName: 'WBS Menu Demo',
   tagline: 'Serious taste, real flavor.',
   tagline_ar: 'طعم حقيقي، نكهة أصيلة.',
 

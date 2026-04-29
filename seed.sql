@@ -1,4 +1,4 @@
--- Karmesh Broasted seed data
+-- WBS Menu Demo seed data
 -- Paste this into Supabase SQL editor AFTER running the schema.
 -- NOTE: These INSERTs bypass RLS because they run as postgres superuser in the SQL editor.
 

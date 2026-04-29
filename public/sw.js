@@ -1,6 +1,6 @@
-// Service Worker for Karmesh Broasted PWA
+// Service Worker for WBS Menu Demo PWA
 
-const CACHE_NAME = 'karmesh-broasted-v1';
+const CACHE_NAME = 'wbs-menu-demo-v1';
 const OFFLINE_URL = '/offline.html';
 
 // === INSTALL ===

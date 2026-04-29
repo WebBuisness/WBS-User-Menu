@@ -93,7 +93,7 @@ function CheckoutPage() {
     }
 
     return [
-      `🍖 *New Order — Karmesh Broasted*`,
+      `🍖 *New Order — WBS Menu Demo*`,
       `🕢 Order #${orderNo}`,
       ``,
       `👤 *Name:* ${name}`,
