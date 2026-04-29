@@ -29,15 +29,17 @@ export const metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'WBS Menu Demo',
+    startupImage: '/icon.svg',
   },
   icons: {
     icon: '/icon.svg',
     apple: '/icon.svg',
+    shortcut: '/icon.svg',
   },
 };
 
 export const viewport = {
-  themeColor: '#F97316',
+  themeColor: '#000000',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -53,6 +55,8 @@ export default function RootLayout({ children }) {
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-touch-fullscreen" content="yes" />
+        <meta name="format-detection" content="telephone=no" />
       </head>
       <body className="bg-black text-white antialiased" suppressHydrationWarning>
         {children}

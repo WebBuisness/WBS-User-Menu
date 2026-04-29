@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Search, WifiOff } from 'lucide-react';
 import Header from '@/components/Header';
 import SplashScreen from '@/components/SplashScreen';
 import MenuItemCard from '@/components/MenuItemCard';
@@ -19,7 +19,6 @@ function Home() {
   const { lang, t } = useLang();
   const { addItem } = useCart();
 
-
   const [categories, setCategories] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,6 +28,46 @@ function Home() {
   const [whatsapp, setWhatsapp] = useState('');
   const [isOpen, setIsOpen] = useState(true);
   const [schedule, setSchedule] = useState(null);
+  const [isOnline, setIsOnline] = useState(true);
+
+  // Initial load from cache
+  useEffect(() => {
+    const cachedCats = localStorage.getItem('dh_categories');
+    const cachedItems = localStorage.getItem('dh_items');
+    const cachedSettings = localStorage.getItem('dh_settings');
+
+    if (cachedCats) setCategories(JSON.parse(cachedCats));
+    if (cachedItems) setItems(JSON.parse(cachedItems));
+    if (cachedSettings) {
+      const settings = JSON.parse(cachedSettings);
+      const wa = settings.find(s => s.key === 'whatsapp_number')?.value;
+      setWhatsapp(wa || '');
+      const manualOpen = settings.find(s => s.key === 'restaurant_open')?.value;
+      const rawSchedule = settings.find(s => s.key === 'opening_hours')?.value;
+      let parsedSchedule = null;
+      if (rawSchedule) {
+        try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
+      }
+      setSchedule(parsedSchedule);
+      setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
+    }
+
+    if (cachedCats && cachedItems) {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    setIsOnline(navigator.onLine);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -41,15 +80,21 @@ function Home() {
 
         const cats = (catsRes.data && catsRes.data.length) ? catsRes.data : FALLBACK_CATEGORIES;
         const its = (itemsRes.data && itemsRes.data.length) ? itemsRes.data : FALLBACK_ITEMS;
+        const settings = settingsRes.data || [];
 
         setCategories(cats);
         setItems(its);
 
-        const wa = settingsRes.data?.find(s => s.key === 'whatsapp_number')?.value;
+        // Cache for offline/immediate use
+        localStorage.setItem('dh_categories', JSON.stringify(cats));
+        localStorage.setItem('dh_items', JSON.stringify(its));
+        localStorage.setItem('dh_settings', JSON.stringify(settings));
+
+        const wa = settings.find(s => s.key === 'whatsapp_number')?.value;
         setWhatsapp(wa || '');
 
-        const manualOpen = settingsRes.data?.find(s => s.key === 'restaurant_open')?.value;
-        const rawSchedule = settingsRes.data?.find(s => s.key === 'opening_hours')?.value;
+        const manualOpen = settings.find(s => s.key === 'restaurant_open')?.value;
+        const rawSchedule = settings.find(s => s.key === 'opening_hours')?.value;
         let parsedSchedule = null;
         if (rawSchedule) {
           try { parsedSchedule = typeof rawSchedule === 'string' ? JSON.parse(rawSchedule) : rawSchedule; } catch {}
@@ -57,10 +102,9 @@ function Home() {
         setSchedule(parsedSchedule);
         setIsOpen(isRestaurantOpen(parsedSchedule, manualOpen !== 'false'));
       } catch (e) {
-        console.warn('Supabase fetch failed, using fallback', e);
-        setCategories(FALLBACK_CATEGORIES);
-        setItems(FALLBACK_ITEMS);
-        setWhatsapp('');
+        console.warn('Supabase fetch failed, using fallback/cache', e);
+        if (categories.length === 0) setCategories(FALLBACK_CATEGORIES);
+        if (items.length === 0) setItems(FALLBACK_ITEMS);
       } finally {
         setLoading(false);
       }
@@ -164,13 +208,16 @@ function Home() {
       {/* Items grid */}
       <main className="max-w-2xl mx-auto px-4 pt-5 pb-6">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-              className="w-12 h-12 rounded-full border-4 border-neutral-800 border-t-orange-500"
-            />
-            <p className="mt-4 text-neutral-500 text-sm">{t('loading')}</p>
+          <div className="grid grid-cols-2 gap-4 sm:gap-5">
+            {[1, 2, 3, 4, 5, 6].map((n) => (
+              <div key={n} className="bg-neutral-900 rounded-3xl overflow-hidden border border-neutral-800/80 aspect-[4/5] flex flex-col">
+                <div className="aspect-[4/3] bg-neutral-800 animate-pulse" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 w-3/4 bg-neutral-800 rounded animate-pulse" />
+                  <div className="h-3 w-1/2 bg-neutral-800 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <AnimatePresence mode="popLayout">
@@ -213,6 +260,23 @@ function Home() {
       />
 
       <PWAInstallPrompt />
+
+      {/* Offline Banner */}
+      <AnimatePresence>
+        {!isOnline && (
+          <motion.div
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: 50, opacity: 0 }}
+            className="fixed bottom-28 left-4 right-4 z-40"
+          >
+            <div className="bg-orange-600 text-white px-4 py-2 rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs font-bold uppercase tracking-wider">
+              <WifiOff className="w-4 h-4" />
+              {lang === 'ar' ? 'أنت تعمل في وضع عدم الاتصال' : 'You are browsing offline'}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </div>
   );

@@ -1,13 +1,35 @@
 {
   "name": "WBS Menu Demo",
-  "short_name": "WBS Menu Demo",
+  "short_name": "WBS Menu",
   "description": "Serious taste, real flavor. Order döner, burgers, hot dogs & more.",
   "start_url": "/",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0A0A0A",
+  "background_color": "#000000",
   "theme_color": "#F97316",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["food", "shopping"],
   "icons": [
-    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+    {
+      "src": "/icon.svg",
+      "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "48x48 72x72 96x96 128x128 192x192 256x256 512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "View Menu",
+      "short_name": "Menu",
+      "description": "Browse our delicious food menu",
+      "url": "/",
+      "icons": [{ "src": "/icon.svg", "sizes": "192x192" }]
+    }
   ]
 }

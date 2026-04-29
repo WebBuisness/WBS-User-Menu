@@ -1,1 +1,83 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Offline — WBS Menu Demo</title><style>body{margin:0;background:#0A0A0A;color:#fff;font-family:system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center}h1{font-size:2rem;margin-bottom:.5rem;letter-spacing:-0.02em}p{color:#a3a3a3;margin-bottom:2rem}.orange{color:#F97316}button{background:#F97316;color:#fff;border:none;padding:14px 28px;border-radius:999px;font-weight:600;cursor:pointer;font-size:1rem}</style></head><body><h1 class="orange">You're offline</h1><p>Please check your connection to keep the flavor coming.</p><button onclick="location.reload()">Try again</button></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Offline — WBS Menu Demo</title>
+  <style>
+    :root {
+      --orange: #F97316;
+      --black: #000000;
+      --neutral-900: #171717;
+      --neutral-400: #a3a3a3;
+    }
+    body {
+      margin: 0;
+      background: var(--black);
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      text-align: center;
+    }
+    .icon-container {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--orange), #EA580C);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+    }
+    .icon {
+      width: 40px;
+      height: 40px;
+      fill: var(--black);
+    }
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.04em;
+    }
+    p {
+      color: var(--neutral-400);
+      margin-bottom: 2.5rem;
+      max-width: 280px;
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+    button {
+      background: var(--orange);
+      color: var(--black);
+      border: none;
+      padding: 16px 40px;
+      border-radius: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s, background 0.2s;
+    }
+    button:active {
+      transform: scale(0.95);
+      background: #EA580C;
+    }
+  </style>
+</head>
+<body>
+  <div class="icon-container">
+    <svg class="icon" viewBox="0 0 24 24">
+      <path d="M1 1l22 22M16.72 11.06A10.94 10.94 0 0 1 19 12.55M5 12.55a10.94 10.94 0 0 1 5.17-2.39M10.71 5.05A16 16 0 0 1 22.58 9M1.42 9a15.91 15.91 0 0 1 4.7-2.88M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/>
+    </svg>
+  </div>
+  <h1>You're <span style="color:var(--orange)">Offline</span></h1>
+  <p>Check your connection to keep the flavors coming.</p>
+  <button onclick="location.reload()">Try Again</button>
+</body>
+</html>
