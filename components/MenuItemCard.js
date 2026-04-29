@@ -37,6 +37,7 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
             alt={name}
             fill
             priority={index < 4}
+            quality={60}
             {...(index < 4 ? { fetchPriority: "high" } : {})}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
             className="object-cover group-hover:scale-[1.1] transition-transform duration-1000 ease-out"

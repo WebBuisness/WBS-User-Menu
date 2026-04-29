@@ -13,7 +13,7 @@ export default function SplashScreen() {
     const timer = setTimeout(() => {
       sessionStorage.setItem('dh_splash_seen', '1');
       setShow(false);
-    }, 2200);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 

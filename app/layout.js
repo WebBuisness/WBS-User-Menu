@@ -24,6 +24,7 @@ const notoKufi = Noto_Kufi_Arabic({
 export const metadata = {
   title: 'WBS Menu Demo — Serious taste, real flavor',
   description: 'Order authentic broasted, burgers and more. Serious taste, real flavor.',
+  keywords: ['broasted chicken', 'burgers', 'food delivery', 'restaurant menu', 'online ordering', 'WBS Menu'],
   manifest: '/manifest.json',
   openGraph: {
     title: 'WBS Menu Demo',
@@ -46,6 +47,9 @@ export const metadata = {
     description: 'Order authentic broasted, burgers and more. Serious taste, real flavor.',
     images: ['/icon.svg'],
   },
+  alternates: {
+    canonical: 'https://wbs-demo-menu.vercel.app',
+  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -67,19 +71,47 @@ export const viewport = {
 };
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Restaurant',
+    name: 'WBS Menu Demo',
+    image: 'https://wbs-demo-menu.vercel.app/icon.svg',
+    description: 'Order authentic broasted, burgers and more. Serious taste, real flavor.',
+    url: 'https://wbs-demo-menu.vercel.app',
+    servesCuisine: ['Broasted', 'Burgers', 'International'],
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Beirut',
+      addressCountry: 'LB',
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+          'Saturday',
+          'Sunday',
+        ],
+        opens: '11:00',
+        closes: '23:00',
+      },
+    ],
+  };
+
   return (
     <html lang="en" className={`${inter.variable} ${bricolage.variable} ${notoKufi.variable} dark`} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <link rel="preconnect" href="https://yphtacdbyljefbzaurlo.supabase.co" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://yphtacdbyljefbzaurlo.supabase.co" />
-        {/* Preload the main LCP image if possible — typically the first fallback item */}
-        <link
-          rel="preload"
-          as="image"
-          href="/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1633321702518-7feccafb94d5%3Fcrop%3Dentropy%26cs%3Dsrgb%26fm%3Djpg%26w%3D800%26q%3D85&w=640&q=75"
-          imagesrcset="/_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1633321702518-7feccafb94d5%3Fcrop%3Dentropy%26cs%3Dsrgb%26fm%3Djpg%26w%3D800%26q%3D85&w=640&q=75 1x, /_next/image?url=https%3A%2F%2Fimages.unsplash.com%2Fphoto-1633321702518-7feccafb94d5%3Fcrop%3Dentropy%26cs%3Dsrgb%26fm%3Djpg%26w%3D800%26q%3D85&w=828&q=75 2x"
-        />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="mobile-web-app-capable" content="yes" />
