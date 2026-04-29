@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { Plus, Star, Flame } from 'lucide-react';
+import Image from 'next/image';
 
 export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0, isOpen = true }) {
   const name = lang === 'ar' ? item.name_ar : item.name_en;
@@ -31,14 +32,13 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
       {/* Image */}
       <div className="relative aspect-[4/3] bg-neutral-800 overflow-hidden shrink-0">
         {item.image_url ? (
-          <motion.img
-            initial={{ filter: 'blur(10px)', opacity: 0 }}
-            animate={{ filter: 'blur(0px)', opacity: 1 }}
-            transition={{ duration: 0.6 }}
+          <Image
             src={item.image_url}
             alt={name}
-            loading="lazy"
-            className="w-full h-full object-cover group-hover:scale-[1.1] transition-transform duration-1000 ease-out"
+            fill
+            priority={index < 4}
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 300px"
+            className="object-cover group-hover:scale-[1.1] transition-transform duration-1000 ease-out"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-4xl">🌯</div>
@@ -93,7 +93,7 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
       <div className="flex flex-col flex-1 px-4 pt-3.5 pb-12">
         {/* Name + Price */}
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display font-bold text-[15px] leading-snug line-clamp-2 flex-1">{name}</h3>
+          <h2 className="font-display font-bold text-[15px] leading-snug line-clamp-2 flex-1">{name}</h2>
           <span className="font-display font-extrabold text-orange-500 text-sm shrink-0 no-flip mt-0.5">
             ${Number(item.price).toFixed(2)}
           </span>
@@ -101,7 +101,7 @@ export default function MenuItemCard({ item, lang, onOpen, onQuickAdd, index = 0
 
         {/* Description */}
         {desc && (
-          <p className="text-[11px] text-neutral-500 mt-1.5 leading-relaxed line-clamp-2 flex-1">{desc}</p>
+          <p className="text-[11px] text-neutral-400 mt-1.5 leading-relaxed line-clamp-2 flex-1">{desc}</p>
         )}
       </div>
 

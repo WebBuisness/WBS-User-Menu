@@ -74,6 +74,7 @@ export default function Header({ showCart = true, isOpen = true, schedule = null
             <Link
               href="/cart"
               className="relative w-10 h-10 rounded-full bg-neutral-900 hover:bg-neutral-800 flex items-center justify-center transition"
+              aria-label={t('cart') || 'Cart'}
             >
               <ShoppingBag className="w-5 h-5" />
               {mounted && count > 0 && (
