@@ -1,14 +1,15 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useEffect, useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, WifiOff } from 'lucide-react';
 import Header from '@/components/Header';
 import SplashScreen from '@/components/SplashScreen';
 import MenuItemCard from '@/components/MenuItemCard';
-import ItemSheet from '@/components/ItemSheet';
-import PWAInstallPrompt from '@/components/PWAInstallPrompt';
-import Footer from '@/components/Footer';
+const ItemSheet = dynamic(() => import('@/components/ItemSheet'), { ssr: false });
+const PWAInstallPrompt = dynamic(() => import('@/components/PWAInstallPrompt'), { ssr: false });
+const Footer = dynamic(() => import('@/components/Footer'), { ssr: false });
 import { supabase } from '@/lib/supabase';
 import { useLang } from '@/lib/i18n';
 import { useCart } from '@/lib/cart';

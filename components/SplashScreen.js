@@ -1,81 +1,41 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 export default function SplashScreen() {
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
+  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
-    // Only show once per session
     const seen = sessionStorage.getItem('dh_splash_seen');
-    if (seen) { setShow(false); return; }
-    const timer = setTimeout(() => {
-      sessionStorage.setItem('dh_splash_seen', '1');
-      setShow(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    if (!seen) {
+      setShouldRender(true);
+      setShow(true);
+      const timer = setTimeout(() => {
+        setShow(false);
+        sessionStorage.setItem('dh_splash_seen', '1');
+        setTimeout(() => setShouldRender(false), 500);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
   }, []);
 
+  if (!shouldRender) return null;
+
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.div
-          className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center"
-          initial={{ opacity: 1 }}
-          exit={{ opacity: 0, transition: { duration: 0.4 } }}
-        >
-          <motion.div
-            initial={{ scale: 0.5, rotate: -180, opacity: 0 }}
-            animate={{ scale: 1, rotate: 0, opacity: 1 }}
-            transition={{ type: 'spring', stiffness: 160, damping: 14, delay: 0.1 }}
-            className="relative"
-          >
-            <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-2xl shadow-orange-500/40">
-              <span className="font-display font-black text-5xl text-black">KB</span>
-            </div>
-            <motion.div
-              className="absolute -inset-2 rounded-3xl border-2 border-orange-500/40"
-              animate={{ scale: [1, 1.15, 1], opacity: [0.6, 0, 0.6] }}
-              transition={{ duration: 1.8, repeat: Infinity }}
-            />
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.6 }}
-            className="font-display font-bold text-4xl mt-8 tracking-tight"
-          >
-            WBS <span className="text-orange-500">Menu Demo</span>
-          </motion.h1>
-
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.6 }}
-            className="mt-2 text-neutral-400 text-sm tracking-widest uppercase"
-          >
-            Serious taste, real flavor
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.2 }}
-            className="absolute bottom-12 flex gap-1.5"
-          >
-            {[0,1,2].map(i => (
-              <motion.span
-                key={i}
-                className="w-2 h-2 rounded-full bg-orange-500"
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
-              />
-            ))}
-          </motion.div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      className={`fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center transition-opacity duration-500 ${
+        show ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}
+    >
+      <div className="relative animate-in fade-in zoom-in duration-500">
+        <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-2xl shadow-orange-500/40">
+          <span className="font-display font-black text-4xl text-black">KB</span>
+        </div>
+      </div>
+      <h1 className="font-display font-bold text-3xl mt-6 tracking-tight animate-in slide-in-from-bottom-4 duration-700">
+        WBS <span className="text-orange-500">Menu Demo</span>
+      </h1>
+    </div>
   );
 }

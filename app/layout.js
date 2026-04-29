@@ -6,12 +6,14 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
+  adjustFontFallback: true,
 });
 
 const bricolage = Bricolage_Grotesque({
   subsets: ['latin'],
   variable: '--font-bricolage',
   display: 'swap',
+  adjustFontFallback: true,
 });
 
 const notoKufi = Noto_Kufi_Arabic({
@@ -19,6 +21,7 @@ const notoKufi = Noto_Kufi_Arabic({
   weight: ['400', '500', '700', '900'],
   variable: '--font-arabic',
   display: 'swap',
+  adjustFontFallback: true,
 });
 
 export const metadata = {
