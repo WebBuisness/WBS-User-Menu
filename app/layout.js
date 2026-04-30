@@ -1,6 +1,7 @@
 import './globals.css';
 import { Inter, Bricolage_Grotesque, Noto_Kufi_Arabic } from 'next/font/google';
 import GlobalWhatsApp from '@/components/GlobalWhatsApp';
+import { Analytics } from '@vercel/analytics/next';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,6 +26,7 @@ const notoKufi = Noto_Kufi_Arabic({
 });
 
 export const metadata = {
+  metadataBase: new URL('https://wbs-demo-menu.vercel.app'),
   title: 'WBS Menu Demo — Serious taste, real flavor',
   description: 'Order authentic broasted, burgers and more. Serious taste, real flavor.',
   keywords: ['broasted chicken', 'burgers', 'food delivery', 'restaurant menu', 'online ordering', 'WBS Menu'],
@@ -123,6 +125,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-black text-white antialiased" suppressHydrationWarning>
         {children}
+        <Analytics />
         <GlobalWhatsApp />
         <script
           dangerouslySetInnerHTML={{

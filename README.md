@@ -14,10 +14,11 @@ Welcome to the **WBS-User-Panel**, the interactive digital menu for the WBS Menu
 
 ### Core
 
-- **Framework:** [Next.js 14](https://nextjs.org/)
+- **Framework:** [Next.js 16](https://nextjs.org/)
+- **Analytics:** [Vercel Analytics](https://vercel.com/analytics)
 - **Language:** JavaScript / TypeScript
 - **Styling:** [Tailwind CSS](https://tailwindcss.com/)
-- **Package Manager:** NPM
+- **Package Manager:** NPM / Yarn
 
 ### Database & Auth
 

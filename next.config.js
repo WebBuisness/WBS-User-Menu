@@ -1,4 +1,5 @@
 const nextConfig = {
+  turbopack: {},
   output: 'standalone',
   images: {
     formats: ['image/avif', 'image/webp'],
