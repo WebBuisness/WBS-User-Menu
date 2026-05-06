@@ -12,6 +12,8 @@ import { useCart } from '@/lib/cart';
 import { useLang } from '@/lib/i18n';
 import { supabase } from '@/lib/supabase';
 import { isRestaurantOpen } from '@/lib/utils';
+import { orderSchema, validateData, sanitizeObject } from '@/lib/validations';
+import { toast } from 'sonner';
 
 function CheckoutPage() {
   const router = useRouter();
@@ -28,6 +30,7 @@ function CheckoutPage() {
   const [whatsapp, setWhatsapp] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isOpen, setIsOpen] = useState(true);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     const p = localStorage.getItem('dh_promo');
@@ -111,13 +114,29 @@ function CheckoutPage() {
 
   const placeOrder = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !phoneNumber.trim() || !address.trim()) return;
+    setErrors({});
+    
+    const rawData = {
+      name: name.trim(),
+      phone: combinedPhone,
+      address: address.trim(),
+      email: 'guest@example.com', // Placeholder for schema
+      payment_method: 'cash',
+    };
+
+    const validation = validateData(orderSchema, rawData);
+    if (!validation.success) {
+      setErrors(validation.errors);
+      toast.error('Please fix the errors in the form.');
+      return;
+    }
+
     setSubmitting(true);
 
     const orderPayload = {
-      customer_name: name.trim(),
-      phone: combinedPhone,
-      address: address.trim(),
+      customer_name: rawData.name,
+      phone: rawData.phone,
+      address: rawData.address,
       items: items.map(it => ({
         id: it.id,
         name_en: it.name_en,
@@ -138,13 +157,26 @@ function CheckoutPage() {
     let orderNo = Date.now().toString().slice(-6);
 
     try {
-      const { data, error } = await supabase.from('orders').insert(orderPayload).select().single();
-      if (!error && data) {
-        orderId = data.id;
-        orderNo = data.id.slice(0, 8).toUpperCase();
+      const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderPayload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        orderId = result.data.id;
+        orderNo = result.data.id.slice(0, 8).toUpperCase();
+      } else if (response.status === 429) {
+        toast.error('Too many requests. Please try again in a minute.');
+        setSubmitting(false);
+        return;
+      } else {
+        console.warn('order save failed', result.error);
       }
-    } catch (e) {
-      console.warn('order save failed', e);
+    } catch (err) {
+      console.warn('order save failed', err);
     }
 
     // Persist confirmation data
